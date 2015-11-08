@@ -1,3 +1,4 @@
+require_relative 'table'
 require 'test/unit'
 require 'contest'
 require 'pry'
@@ -47,31 +48,60 @@ class TableTest < Test::Unit::TestCase
     assert_equal "Beth", table[1, "name"]
   end
 
-  test "cell can be referred to by column index and row index" do
-    table = Table.new(@data, :headers => true)
-    assert_equal "Beth", table[1, 0]
+  context "row manipulations " do
+    setup do
+      @table = Table.new(@data, :headers => true)
+    end
+
+    test "can retrieve a row" do
+      assert_equal ["George", 45, "photographer"], @table.row(2)
+    end
+
+    test "can insert a row at any position" do
+      @table.add_row(["Jane", 19, "shop assistant"], 1)
+      assert_equal ["Jane", 19, "shop assistant"], @table.row(1)
+    end
+
+    test "can delete a row" do
+      to_be_delete = @table.row(2)
+      @table.delete_row(2)
+      assert_not_equal to_be_delete, @table.row(2)
+    end
+
+    test "tranform row cells" do
+      @table.transform_row(0) do |cell|
+        cell.is_a?(String) ? cell.upcase : cell
+      end
+      assert_equal ["TOM", 32, "ENGINEER"], @table.row(0)
+    end
+
+    test "reduce the rows to those that meet a particular condition" do
+      @table.select_rows do |row|
+        row[1] < 30
+      end
+      assert !@table.rows.include?(["George", 45,"photographer"])
+    end
+  end
+
+  context "column manipulations" do
+    setup do
+      @table = Table.new(@data, :headers => true)
+    end
+
+    test "can access a column by its name" do
+      assert_equal ["Tom", "Beth", "George", "Laura", "Marilyn"],
+                   @table.column("name")
+    end
+
+    test "can access a column by its index" do
+      assert_equal ["Tom", "Beth", "George", "Laura", "Marilyn"],
+                   @table.column(0)
+    end
+
+    test "can rename a columb" do
+      @table.rename_column("name", "first name")
+      assert_equal ["first name", "age", "occupation"], @table.headers
+    end
   end
 end
 
-class Table
-  attr_reader :rows, :headers
-
-  def initialize(data = [], options = {})
-    @headers = options[:headers] ? data.shift : []
-    @rows = data
-  end
-
-  def add_row(row)
-    @rows << row
-  end
-
-  def [](row, col)
-    col = column_index(col)
-    rows[row][col]
-  end
-
-  def column_index(pos)
-    i = headers.index(pos)
-    i.nil? ? pos : i
-  end
-end
