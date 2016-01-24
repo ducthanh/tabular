@@ -21,6 +21,7 @@ class TeaClock
 end
 
 
+
 SleepTimer = Struct.new(:minutes, :notifier) do
   def start
     sleep minutes * 60
