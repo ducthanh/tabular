@@ -17,3 +17,26 @@ class A
 		end
 	end
 end
+
+
+class Bee
+  @@tracker = nil
+
+  def create
+    @@tracker = 1
+  end
+
+  def self.get
+    @@tracker
+  end
+end
+
+n = Bee.new
+n.create
+
+puts Bee.get
+
+
+
+
+

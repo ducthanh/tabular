@@ -37,5 +37,8 @@ a = A.new("hello world", 5)
 b = B.new(7, a)
 c = C.new(b, a)
 
+puts c.to_s + "\n"
+
 serialized_object = YAML::dump(c)
 puts serialized_object
+puts serialized_object.class
