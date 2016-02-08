@@ -6,7 +6,7 @@
 # Recursion
 # Lazy-evaluation
 require 'pry'
-require ''
+require 'csv'
 
 class CssBlock
   attr_reader :selector, :properties
@@ -67,3 +67,19 @@ class AnnualWeather
   #   total / @readings.size.to_f
   # end
 end
+
+def text_transfer(txt, key)
+  al = ('a'..'z').to_a
+  # puts al
+  result = []
+  txt.length.times do |c|
+    d = txt[c]
+    al.find_index(d).nil? ? result << ' ' : result << al[al.find_index(d) -  key]
+
+  end
+  result.join
+end
+
+puts text_transfer('the quick brown fox jumps over the lazy dog', 3)
+
+puts "HAPPY NEW YEARS 2016"
